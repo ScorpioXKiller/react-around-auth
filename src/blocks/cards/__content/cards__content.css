@@ -1,0 +1,22 @@
+.cards__content {
+    margin: 0 15px 0 21px;
+    padding: 25px 0 30px;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@media screen and (max-width: 880px) {
+    .cards__content {
+        margin: 0 1.7vw 0 2.3vw;
+        padding: 2.8vw 0 3.4vw;
+    }
+}
+
+@media screen and (max-width: 425px) {
+    .cards__content {
+        padding: 20px 0 24px;
+        margin: 0 15px 0 21px;
+    }
+}

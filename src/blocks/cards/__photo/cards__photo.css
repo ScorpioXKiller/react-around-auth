@@ -1,0 +1,25 @@
+.cards__photo {
+    width: 282px;
+    height: 282px;
+    border-radius: 10px 10px 0 0;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 880px) {
+    .cards__photo {
+        width: 100%;
+        height: 28.636vw;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .cards__photo {
+        height: 43.5vw;
+    }
+}
+
+@media screen and (max-width: 425px) {
+    .cards__photo {
+        height: 282px;
+    }
+}

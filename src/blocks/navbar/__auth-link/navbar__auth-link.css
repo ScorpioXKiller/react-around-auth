@@ -1,0 +1,17 @@
+.navbar__auth-link {
+  font-size: 18px;
+  line-height: 1.22;
+  text-decoration: none;
+  color: white;
+}
+
+.navbar__auth-link:hover {
+  opacity: 0.6;
+}
+
+
+@media screen and (max-width: 425px) {
+    .navbar__auth-link {
+        font-size: 16px;
+    }
+}

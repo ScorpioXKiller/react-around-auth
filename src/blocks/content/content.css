@@ -1,0 +1,18 @@
+.content {
+    max-width: 880px;
+    margin: 0 auto 68px;
+}
+
+@media screen and (max-width: 880px) {
+    .content {
+        max-width: 90%;
+        margin-bottom: 7.727vw;
+    }
+}
+
+@media screen and (max-width: 425px) {
+    .content {
+        max-width: 282px;
+        margin-bottom: 50px;
+    }
+}

@@ -1,0 +1,23 @@
+.cards__name {
+    margin: 0;
+    max-width: 220px;
+    font-weight: 900;
+    font-size: 24px;
+    line-height: 1.2;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+@media screen and (max-width: 880px) {
+    .cards__name {
+        max-width: calc(100% - 21px);
+        font-size: 2.727vw;
+    }
+}
+
+@media screen and (max-width: 425px) {
+    .cards__name {
+        font-size: 24px;
+    }
+}

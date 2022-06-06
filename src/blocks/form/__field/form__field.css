@@ -1,0 +1,7 @@
+.form__field{
+    width: 100%;
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}

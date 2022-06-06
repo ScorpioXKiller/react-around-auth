@@ -1,0 +1,6 @@
+.card-popup__container {
+    max-width: 75vw;
+    max-height: max-content;
+    position: absolute;
+    align-items: center;
+}

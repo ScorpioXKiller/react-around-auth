@@ -1,0 +1,11 @@
+.popup__confirm-container {
+    width: 358px;
+    margin: 34px 36px 36.5px;
+}
+
+@media screen and (max-width: 540px) {
+    .popup__confirm-container {
+        width: 238px;
+        margin: 25px 22px;
+    }
+}

@@ -1,0 +1,9 @@
+@media screen and (max-width: 540px) {
+    .card-popup__close-button {
+        width: 30px;
+        height: 30px;
+        top: -35px;
+        right: -35px;
+        background-size: contain;
+    }
+}

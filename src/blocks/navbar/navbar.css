@@ -1,0 +1,19 @@
+.navbar {
+    display: flex;
+    column-gap: 24px;
+}
+
+@media screen and (max-width: 625px) {
+    .navbar {
+        margin-top: 30px;
+        flex-direction: column;
+        row-gap: 10px;
+        align-items: flex-end;
+    }
+}
+
+@media screen and (max-width: 425px) {
+    .navbar {
+        margin: 10px auto 0;
+    }
+}
