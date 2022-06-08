@@ -88,7 +88,7 @@ function App() {
             );
         });
     }
-  }, [isLoggedIn, history]);
+  }, [history, userEmail]);
 
   const handleEditAvatarClick = () => {
     setIsEditAvatarPopupOpen(true);
@@ -223,7 +223,9 @@ function App() {
     auth
       .authorize(email, password)
       .then(() => {
+        setIsLoading(true);
         setIsLoggedIn(true);
+        setUserEmail(email);
       })
       .then(() => {
         history.push('/users/me');
