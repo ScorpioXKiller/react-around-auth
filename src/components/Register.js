@@ -1,41 +1,18 @@
-import { useContext, useEffect, useState } from 'react';
-import { useHistory, withRouter } from 'react-router-dom';
-import { AuthContext } from '../contexts/AuthContext';
+import { useContext, useEffect } from 'react';
 import { HeaderLinkContext } from '../contexts/HeaderLinkContext';
-import * as auth from '../utils/auth';
 import AuthForm from './AuthForm';
 
 const Register = (props) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const history = useHistory();
   const { changeLinkTextContext, changeLinkPathContext } =
     useContext(HeaderLinkContext);
 
-  const { setIsRegistered } = useContext(AuthContext);
+  const { onFormReset } = props;
 
   useEffect(() => {
+    onFormReset();
     changeLinkTextContext('Sign in');
     changeLinkPathContext('/signin');
   }, [changeLinkTextContext, changeLinkPathContext]);
-
-  const handleRegister = (event) => {
-    event.preventDefault();
-    auth
-      .register(email, password)
-      .then((res) => {
-        props.onInfoTooltipOpen(true);
-        if (!res) {
-          console.log('One of the fields was filled in incorrectly');
-          setIsRegistered(false);
-        } else {
-          setIsRegistered(true);
-          history.push('/signin');
-        }
-      })
-      .catch((err) => console.log(err));
-  };
 
   return (
     <AuthForm
@@ -44,13 +21,13 @@ const Register = (props) => {
       submitButtonTitle='Sign Up'
       link='/signin'
       linkText='Already a member? Log in here!'
-      email={email}
-      password={password}
-      onEmailChange={(event) => setEmail(event.target.value)}
-      onPasswordChange={(event) => setPassword(event.target.value)}
-      onSubmit={handleRegister}
+      email={props.email}
+      password={props.password}
+      onEmailChange={props.onEmailChange}
+      onPasswordChange={props.onPasswordChange}
+      onSubmit={props.onRegister}
     />
   );
 };
 
-export default withRouter(Register);
+export default Register;

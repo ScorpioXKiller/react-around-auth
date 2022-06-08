@@ -1,26 +1,18 @@
 export const BASE_URL = 'https://register.nomoreparties.co';
 
 export const register = (email, password) => {
-  return _fetchPost('signup', { email, password })
-    .then((response) => {
-      if (response.status === 201) {
-        return response.json();
-      }
-    })
-    .then((res) => {
-      return res;
-    });
+  return fetchPost('signup', { email, password }).then((res) => {
+    return res;
+  });
 };
 
 export const authorize = (email, password) => {
-  return _fetchPost('signin', { email, password })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.token) {
-        localStorage.setItem('token', data.token);
-        return data;
-      }
-    });
+  return fetchPost('signin', { email, password }).then((data) => {
+    if (data.token) {
+      localStorage.setItem('token', data.token);
+      return data;
+    }
+  });
 };
 
 export const checkTokenValidity = (token) => {
@@ -32,11 +24,11 @@ export const checkTokenValidity = (token) => {
       Authorization: `Bearer ${token}`,
     },
   })
-    .then((res) => res.json())
+    .then(checkResponse)
     .then((data) => data);
 };
 
-const _fetchPost = (route, props) => {
+const fetchPost = (route, props) => {
   return fetch(`${BASE_URL}/${route}`, {
     method: 'POST',
     headers: {
@@ -44,5 +36,12 @@ const _fetchPost = (route, props) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(props),
-  });
+  }).then(checkResponse);
+};
+
+const checkResponse = (response) => {
+  if (response.ok) {
+    return response.json();
+  }
+  return Promise.reject(response.status);
 };

@@ -18,7 +18,7 @@ const Card = ({ card, ...props }) => {
   };
 
   return (
-    <li key={props} className='cards__item'>
+    <li className='cards__item'>
       <img
         className='cards__photo'
         src={`${card.link}`}

@@ -16,12 +16,15 @@ import * as auth from '../utils/auth';
 import { AuthContext } from '../contexts/AuthContext';
 import { HeaderLinkContext } from '../contexts/HeaderLinkContext';
 import InfoTooltip from './InfoTooltip';
+import ImagePopup from './ImagePopup';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
   const [linkText, changeLinkTextContext] = useState('');
   const [linkPath, changeLinkPathContext] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -44,6 +47,8 @@ function App() {
   const history = useHistory();
 
   useEffect(() => {
+    resetForm();
+
     if (!isLoggedIn) {
       history.push('./signin');
     }
@@ -185,9 +190,63 @@ function App() {
     });
   };
 
+  const handleEmail = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const handlePassword = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const handleRegister = (event) => {
+    event.preventDefault();
+    auth
+      .register(email, password)
+      .then(() => {
+        setIsRegistered(true);
+        history.push('/signin');
+      })
+      .catch((err) => {
+        setIsRegistered(false);
+
+        if (err === 400) {
+          console.log('One of the fields was filled in incorrectly');
+        } else {
+          console.log(`Something went wrong: ${err}`);
+        }
+      })
+      .finally(() => setIsInfoTooltipOpen(true));
+  };
+
+  const handleLogin = (event) => {
+    event.preventDefault();
+    auth
+      .authorize(email, password)
+      .then(() => {
+        setIsLoggedIn(true);
+      })
+      .then(() => {
+        history.push('/users/me');
+      })
+      .catch((err) => {
+        if (err === 400) {
+          console.log('One or more of the fields were not provided');
+        } else if (err === 401) {
+          console.log('Incorrect email address or password');
+        } else {
+          console.log(`Something went wrong: ${err}`);
+        }
+      });
+  };
+
   const handleSignOut = () => {
     localStorage.removeItem('token');
     setUserEmail('');
+  };
+
+  const resetForm = () => {
+    setEmail('');
+    setPassword('');
   };
 
   return (
@@ -226,6 +285,8 @@ function App() {
               onClose={closeAllPopups}
               onAddPlaceSubmit={handleAddPlaceSubmit}
             />
+
+            <ImagePopup selectedCard={selectedCard} onClose={closeAllPopups} />
 
             <ConfirmPopup
               isOpen={isConfirmPopupOpen}
@@ -269,11 +330,25 @@ function App() {
               )}
 
               <Route path='/signup'>
-                <Register onInfoTooltipOpen={setIsInfoTooltipOpen} />
+                <Register
+                  email={email}
+                  password={password}
+                  onEmailChange={handleEmail}
+                  onPasswordChange={handlePassword}
+                  onRegister={handleRegister}
+                  onFormReset={resetForm}
+                />
               </Route>
 
               <Route path='/signin'>
-                <Login />
+                <Login
+                  email={email}
+                  password={password}
+                  onEmailChange={handleEmail}
+                  onPasswordChange={handlePassword}
+                  onLogin={handleLogin}
+                  onFormReset={resetForm}
+                />
               </Route>
             </Switch>
           </div>
