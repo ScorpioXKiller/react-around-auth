@@ -3,6 +3,7 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import { HeaderLinkContext } from '../contexts/HeaderLinkContext';
 import avatarEditButton from '../images/ui/avatar-edit-button.svg';
 import Card from './Card';
+import Footer from './Footer';
 
 const Main = (props) => {
   const userData = useContext(CurrentUserContext);
@@ -73,6 +74,8 @@ const Main = (props) => {
             ))}
           </ul>
         </section>
+
+        <Footer />
       </main>
     </>
   );
