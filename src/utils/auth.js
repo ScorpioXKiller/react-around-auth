@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://register.nomoreparties.co';
+export const BASE_URL = 'https://api.dimagorodov.students.nomoreparties.sbs';
 
 export const register = (email, password) => {
   return fetchPost('signup', { email, password }).then((res) => {

@@ -9,14 +9,14 @@ class Api {
 
   getUserInfo() {
     return this._defaultFetch(`${this._baseUrl}/users/me`, {
-      method: "GET",
+      method: 'GET',
       headers: this._headers,
     });
   }
 
   uploadUserInfo(data) {
     return this._defaultFetch(`${this._baseUrl}/users/me`, {
-      method: "PATCH",
+      method: 'PATCH',
       body: JSON.stringify(data),
       headers: this._headers,
     });
@@ -24,7 +24,7 @@ class Api {
 
   uploadProfileAvatar(url) {
     return this._defaultFetch(`${this._baseUrl}/users/me/avatar`, {
-      method: "PATCH",
+      method: 'PATCH',
       body: JSON.stringify({ avatar: url }),
       headers: this._headers,
     });
@@ -32,14 +32,14 @@ class Api {
 
   getInitialCards() {
     return this._defaultFetch(`${this._baseUrl}/cards`, {
-      method: "GET",
+      method: 'GET',
       headers: this._headers,
     });
   }
 
   uploadCard(data) {
     return this._defaultFetch(`${this._baseUrl}/cards`, {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify(data),
       headers: this._headers,
     });
@@ -47,28 +47,28 @@ class Api {
 
   deleteCard(cardId) {
     return this._defaultFetch(`${this._baseUrl}/cards/${cardId}`, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: this._headers,
     });
   }
 
   likeCard(cardId) {
     return this._defaultFetch(`${this._baseUrl}/cards/likes/${cardId}`, {
-      method: "PUT",
+      method: 'PUT',
       headers: this._headers,
     });
   }
 
   dislikeCard(cardId) {
     return this._defaultFetch(`${this._baseUrl}/cards/likes/${cardId}`, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: this._headers,
     });
   }
 
   changeLikeCardStatus(cardId, isLiked) {
     return this._defaultFetch(`${this._baseUrl}/cards/likes/${cardId}`, {
-      method: isLiked ? "PUT" : "DELETE",
+      method: isLiked ? 'PUT' : 'DELETE',
       headers: this._headers,
     });
   }
@@ -83,11 +83,7 @@ class Api {
 }
 
 const api = new Api({
-  baseUrl: "https://around.nomoreparties.co/v1/group-12",
-  headers: {
-    authorization: "21827e70-d261-4f64-a3bc-4b52f52216ed",
-    "Content-Type": "application/json",
-  },
+  baseUrl: 'https://api.dimagorodov.students.nomoreparties.sbs',
 });
 
 export default api;
