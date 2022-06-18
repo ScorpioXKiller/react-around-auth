@@ -55,16 +55,6 @@ function App() {
   }, [isLoggedIn, history]);
 
   useEffect(() => {
-    const close = (e) => {
-      if (e.code === 'Escape') {
-        closeAllPopups();
-      }
-    };
-    window.addEventListener('keydown', close);
-    return () => window.removeEventListener('keydown', close);
-  }, []);
-
-  useEffect(() => {
     if (localStorage.getItem('token')) {
       const token = localStorage.getItem('token');
       auth
@@ -298,11 +288,7 @@ function App() {
               onDeleteSubmit={handleDeleteSubmit}
             />
 
-            <InfoTooltip
-              name='infoTooltip'
-              isOpen={isInfoTooltipOpen}
-              onClose={closeAllPopups}
-            />
+            <InfoTooltip isOpen={isInfoTooltipOpen} onClose={closeAllPopups} />
 
             {!isLoading && (
               <Header

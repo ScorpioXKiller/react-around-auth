@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
+import Popup from './Popup';
 
-const ImagePopup = ({ selectedCard, ...props }) => {
+const ImagePopup = ({ selectedCard, onClose }) => {
   const [popupImageLink, setPopupImageLink] = useState('');
   const [popupImageTitle, setPopupImageName] = useState('');
 
@@ -12,27 +13,16 @@ const ImagePopup = ({ selectedCard, ...props }) => {
   }, [selectedCard]);
 
   return (
-    <section
-      className={`popup popup_type_imagePopup ${
-        selectedCard.isCardOpen ? 'popup_visible' : ''
-      }`}
+    <Popup
+      name='imagePopup'
+      containerName='card-popup__container'
+      isOpen={selectedCard.isCardOpen}
+      onClose={onClose}
     >
-      <div className='popup__page-overlay' onClick={props.onClose}></div>
+      <img className='card-popup__image' src={popupImageLink} alt='Place' />
 
-      <div className='card-popup__container'>
-        <button
-          className='button popup__close-button card-popup__close-button'
-          type='button'
-          title='Close'
-          aria-label='close'
-          onClick={props.onClose}
-        ></button>
-
-        <img className='card-popup__image' src={popupImageLink} alt='Place' />
-
-        <h2 className='card-popup__name'>{popupImageTitle}</h2>
-      </div>
-    </section>
+      <h2 className='card-popup__name'>{popupImageTitle}</h2>
+    </Popup>
   );
 };
 

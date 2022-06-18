@@ -1,40 +1,22 @@
-const PopupWithForm = (props) => {
+import Popup from './Popup';
+
+const PopupWithForm = ({ name, isOpen, onClose, children, ...props }) => {
   return (
-    <section
-      className={`popup popup_type_${props.name} ${
-        props.isOpen ? 'popup_visible' : ''
-      }`}
-    >
-      <div className='popup__page-overlay' onClick={props.onClose}></div>
+    <Popup name={name} containerName='popup__container' isOpen={isOpen} onClose={onClose}>
+      <h2 className='popup__title'>{props.title}</h2>
 
-      <div className='popup__container'>
+      <form className='form' name={props.name} onSubmit={props.onSubmit}>
+        {children}
+
         <button
-          className='button popup__close-button'
-          type='button'
-          title='Close'
-          aria-label='close'
-          onClick={props.onClose}
-        ></button>
-
-        <h2 className='popup__title'>{props.title}</h2>
-
-        <form
-          className='form'
-          name={props.name}
-          onSubmit={props.onSubmit}
+          className='button form__submit-button'
+          type='submit'
+          title='Save'
         >
-          {props.children}
-
-          <button
-            className='button form__submit-button'
-            type='submit'
-            title='Save'
-          >
-            {props.submitButtonTitle}
-          </button>
-        </form>
-      </div>
-    </section>
+          {props.submitButtonTitle}
+        </button>
+      </form>
+    </Popup>
   );
 };
 
