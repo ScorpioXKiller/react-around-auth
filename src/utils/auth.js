@@ -1,18 +1,20 @@
 export const BASE_URL = 'https://api.dimagorodov.students.nomoreparties.sbs';
 
-export const register = (email, password) => {
-  return fetchPost('signup', { email, password }).then((res) => {
-    return res;
-  });
+export const register = ({ email, password }) => {
+  return fetchPost('signup', { email, password }).then((res) =>
+    checkResponse(res)
+  );
 };
 
-export const authorize = (email, password) => {
-  return fetchPost('signin', { email, password }).then((data) => {
-    if (data.token) {
-      localStorage.setItem('token', data.token);
-      return data;
-    }
-  });
+export const authorize = ({ email, password }) => {
+  return fetchPost('signin', { email, password })
+    .then((res) => checkResponse(res))
+    .then((data) => {
+      if (data.token) {
+        localStorage.setItem('jwt', data.token);
+        return data;
+      }
+    });
 };
 
 export const checkTokenValidity = (token) => {
@@ -36,7 +38,7 @@ const fetchPost = (route, props) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(props),
-  }).then(checkResponse);
+  });
 };
 
 const checkResponse = (response) => {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import Header from './Header';
@@ -44,19 +44,20 @@ function App() {
     useState('Yes');
   const [isLoading, setIsLoading] = useState(false);
 
+  const [token, setToken] = useState(localStorage.getItem('jwt'));
+
   const history = useHistory();
 
   useEffect(() => {
     resetForm();
 
     if (!isLoggedIn) {
-      history.push('./signin');
+      history.push('/signin');
     }
   }, [isLoggedIn, history]);
 
   useEffect(() => {
-    if (localStorage.getItem('token')) {
-      const token = localStorage.getItem('token');
+    if (token) {
       auth
         .checkTokenValidity(token)
         .then((res) => {
@@ -65,20 +66,24 @@ function App() {
           setUserEmail(res.data.email);
           history.push('/users/me');
         })
-        .then(() => {
-          api
-            .getInitialData()
-            .then(([card, user]) => {
-              setCurrentUser(user);
-              setCards(card);
-              setIsLoading(false);
-            })
-            .catch((err) =>
-              console.log(`Error while initializing data: ${err}`)
-            );
-        });
+        .catch((err) => console.log(err));
+    } else {
+      setIsLoggedIn(false);
     }
-  }, [history, userEmail]);
+  }, [history, token]);
+
+  useEffect(() => {
+    if (token) {
+      api
+        .getInitialData(token)
+        .then(([card, user]) => {
+          setCurrentUser(user.data);
+          setCards(card.data);
+          setIsLoading(false);
+        })
+        .catch((err) => console.log(`Error while initializing data: ${err}`));
+    }
+  }, [token]);
 
   const handleEditAvatarClick = () => {
     setIsEditAvatarPopupOpen(true);
@@ -101,18 +106,18 @@ function App() {
     });
   };
 
-  const handleCardLike = useCallback((card, isLiked) => {
+  const handleCardLike = (card, isLiked) => {
     api
-      .changeLikeCardStatus(card._id, !isLiked)
+      .changeLikeCardStatus(card._id, !isLiked, token)
       .then((newCard) => {
         setCards((state) =>
           state.map((currentCard) =>
-            currentCard._id === card._id ? newCard : currentCard
+            currentCard._id === card._id ? newCard.data : currentCard
           )
         );
       })
       .catch((err) => console.log(`Error while initializing data: ${err}`));
-  }, []);
+  };
 
   const handleCardDelete = (id) => {
     setIsConfirmPopupOpen(true);
@@ -124,9 +129,9 @@ function App() {
   const handleUpdateUser = ({ name, about }) => {
     setEditProfileSubmitButtonTitle('Saving...');
     api
-      .uploadUserInfo({ name, about })
+      .uploadUserInfo({ name, about }, token)
       .then((user) => {
-        setCurrentUser(user);
+        setCurrentUser(user.data);
         closeAllPopups();
       })
       .catch((err) => console.log(`Error while initializing data: ${err}`))
@@ -136,9 +141,9 @@ function App() {
   const handleUpdateAvatar = (url) => {
     setEditAvatarSubmitButtonTitle('Saving...');
     api
-      .uploadProfileAvatar(url)
+      .uploadProfileAvatar(url, token)
       .then((user) => {
-        setCurrentUser(user);
+        setCurrentUser(user.data);
         closeAllPopups();
       })
       .catch((err) => console.log(`Error while initializing data: ${err}`))
@@ -148,9 +153,9 @@ function App() {
   const handleAddPlaceSubmit = ({ name, link }) => {
     setAddPlaceSubmitButtonTitle('Saving...');
     api
-      .uploadCard({ name, link })
-      .then((card) => {
-        setCards([card, ...cards]);
+      .uploadCard({ name, link }, token)
+      .then((newCard) => {
+        setCards([newCard.data, ...cards]);
         closeAllPopups();
       })
       .catch((err) => console.log(`Error while initializing data: ${err}`))
@@ -160,7 +165,7 @@ function App() {
   const handleDeleteSubmit = (cardId) => {
     setConfirmDeleteButtonTitle('Deleting...');
     api
-      .deleteCard(cardId)
+      .deleteCard(cardId, token)
       .then(() => {
         setCards(cards.filter((card) => card._id !== cardId));
         closeAllPopups();
@@ -190,8 +195,10 @@ function App() {
 
   const handleRegister = (event) => {
     event.preventDefault();
+    setIsLoading(true);
+
     auth
-      .register(email, password)
+      .register({ email, password })
       .then(() => {
         setIsRegistered(true);
         history.push('/signin');
@@ -201,18 +208,26 @@ function App() {
 
         if (err === 400) {
           console.log('One of the fields was filled in incorrectly');
+        } else if (err === 409) {
+          console.log('The User is already exists');
         } else {
           console.log(`Something went wrong: ${err}`);
         }
       })
-      .finally(() => setIsInfoTooltipOpen(true));
+      .finally(() => {
+        setIsInfoTooltipOpen(true);
+        setIsLoading(false);
+      });
   };
 
   const handleLogin = (event) => {
     event.preventDefault();
+    setIsLoading(true);
+
     auth
-      .authorize(email, password)
-      .then(() => {
+      .authorize({ email, password })
+      .then((res) => {
+        setToken(res.token);
         setIsLoading(true);
         setIsLoggedIn(true);
         setUserEmail(email);
@@ -228,11 +243,12 @@ function App() {
         } else {
           console.log(`Something went wrong: ${err}`);
         }
-      });
+      })
+      .finally(() => setIsLoading(false));
   };
 
   const handleSignOut = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('jwt');
     setUserEmail('');
   };
 
@@ -290,14 +306,12 @@ function App() {
 
             <InfoTooltip isOpen={isInfoTooltipOpen} onClose={closeAllPopups} />
 
-            {!isLoading && (
-              <Header
-                userEmail={userEmail}
-                link={linkPath}
-                linkText={linkText}
-                onSignOut={handleSignOut}
-              />
-            )}
+            <Header
+              userEmail={userEmail}
+              link={linkPath}
+              linkText={linkText}
+              onSignOut={handleSignOut}
+            />
 
             <Switch>
               {!isLoading && (

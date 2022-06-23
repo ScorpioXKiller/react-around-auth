@@ -1,80 +1,106 @@
 class Api {
-  constructor({ baseUrl, headers }) {
-    this._baseUrl = baseUrl;
-    this._headers = headers;
+  constructor(url) {
+    this._url = url;
   }
 
-  getInitialData = () =>
-    Promise.all([this.getInitialCards(), this.getUserInfo()]);
+  getInitialData = (token) =>
+    Promise.all([this.getInitialCards(token), this.getUserInfo(token)]);
 
-  getUserInfo() {
-    return this._defaultFetch(`${this._baseUrl}/users/me`, {
+  getUserInfo(token) {
+    return this._defaultFetch(`${this._url}/users/me`, {
       method: 'GET',
-      headers: this._headers,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
-  uploadUserInfo(data) {
-    return this._defaultFetch(`${this._baseUrl}/users/me`, {
+  uploadUserInfo(data, token) {
+    return this._defaultFetch(`${this._url}/users/me`, {
       method: 'PATCH',
       body: JSON.stringify(data),
-      headers: this._headers,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
-  uploadProfileAvatar(url) {
-    return this._defaultFetch(`${this._baseUrl}/users/me/avatar`, {
+  uploadProfileAvatar(url, token) {
+    return this._defaultFetch(`${this._url}/users/me/avatar`, {
       method: 'PATCH',
       body: JSON.stringify({ avatar: url }),
-      headers: this._headers,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
-  getInitialCards() {
-    return this._defaultFetch(`${this._baseUrl}/cards`, {
+  getInitialCards(token) {
+    return this._defaultFetch(`${this._url}/cards`, {
       method: 'GET',
-      headers: this._headers,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
-  uploadCard(data) {
-    return this._defaultFetch(`${this._baseUrl}/cards`, {
+  uploadCard(data, token) {
+    return this._defaultFetch(`${this._url}/cards`, {
       method: 'POST',
       body: JSON.stringify(data),
-      headers: this._headers,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
-  deleteCard(cardId) {
-    return this._defaultFetch(`${this._baseUrl}/cards/${cardId}`, {
+  deleteCard(cardId, token) {
+    return this._defaultFetch(`${this._url}/cards/${cardId}`, {
       method: 'DELETE',
-      headers: this._headers,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
-  likeCard(cardId) {
-    return this._defaultFetch(`${this._baseUrl}/cards/likes/${cardId}`, {
+  likeCard(cardId, token) {
+    return this._defaultFetch(`${this._url}/cards/${cardId}/likes`, {
       method: 'PUT',
-      headers: this._headers,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
-  dislikeCard(cardId) {
-    return this._defaultFetch(`${this._baseUrl}/cards/likes/${cardId}`, {
+  dislikeCard(cardId, token) {
+    return this._defaultFetch(`${this._url}/cards/${cardId}/likes`, {
       method: 'DELETE',
-      headers: this._headers,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
-  changeLikeCardStatus(cardId, isLiked) {
-    return this._defaultFetch(`${this._baseUrl}/cards/likes/${cardId}`, {
+  changeLikeCardStatus(cardId, isLiked, token) {
+    return this._defaultFetch(`${this._url}/cards/${cardId}/likes`, {
       method: isLiked ? 'PUT' : 'DELETE',
-      headers: this._headers,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
-  _defaultFetch = (baseUrl, settings) =>
-    fetch(baseUrl, settings).then((res) => {
+  _defaultFetch = (url, settings) =>
+    fetch(url, settings).then((res) => {
       if (res.ok) {
         return res.json();
       }
@@ -82,8 +108,6 @@ class Api {
     });
 }
 
-const api = new Api({
-  baseUrl: 'https://api.dimagorodov.students.nomoreparties.sbs',
-});
+const api = new Api('https://api.dimagorodov.students.nomoreparties.sbs');
 
 export default api;
