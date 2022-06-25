@@ -74,6 +74,8 @@ function App() {
 
   useEffect(() => {
     if (token) {
+      setIsLoading(true);
+
       api
         .getInitialData(token)
         .then(([card, user]) => {
@@ -81,7 +83,8 @@ function App() {
           setCards(card.data);
           setIsLoading(false);
         })
-        .catch((err) => console.log(`Error while initializing data: ${err}`));
+        .catch((err) => console.log(`Error while initializing data: ${err}`))
+        .finally(() => setIsLoading(false));
     }
   }, [token]);
 
@@ -314,22 +317,20 @@ function App() {
             />
 
             <Switch>
-              {!isLoading && (
-                <ProtectedRoute
-                  path='/users/me'
-                  component={Main}
-                  onEditAvatarClick={handleEditAvatarClick}
-                  onEditProfileClick={handleEditProfileClick}
-                  onAddPlaceClick={handleAddPlaceClick}
-                  onCardClick={handleCardClick}
-                  onCardLike={handleCardLike}
-                  onCardDelete={handleCardDelete}
-                  selectedCard={selectedCard}
-                  isAddPlaceClick={isAddPlacePopupOpen}
-                  onClose={closeAllPopups}
-                  cards={cards}
-                />
-              )}
+              <ProtectedRoute
+                path='/users/me'
+                component={Main}
+                onEditAvatarClick={handleEditAvatarClick}
+                onEditProfileClick={handleEditProfileClick}
+                onAddPlaceClick={handleAddPlaceClick}
+                onCardClick={handleCardClick}
+                onCardLike={handleCardLike}
+                onCardDelete={handleCardDelete}
+                selectedCard={selectedCard}
+                isAddPlaceClick={isAddPlacePopupOpen}
+                onClose={closeAllPopups}
+                cards={cards}
+              />
 
               <Route path='/signup'>
                 <Register
